@@ -1,6 +1,28 @@
 let allEntries = [];
 
 // ----------------------------
+// ZEITFORMATIERUNG
+// ----------------------------
+
+function formatDuration(seconds) {
+
+    if (!seconds || seconds <= 0) return "0 min";
+
+    const totalMinutes = Math.floor(seconds / 60);
+
+    // unter 1 Stunde → nur Minuten
+    if (totalMinutes < 60) {
+        return `${totalMinutes} min`;
+    }
+
+    // Stunden + Restminuten
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    return `${hours}.${String(minutes).padStart(2, "0")} h`;
+}
+
+// ----------------------------
 // DATUM FORMATIERUNG
 // ----------------------------
 
@@ -94,10 +116,6 @@ function renderTable(data) {
 
         const project = entry.project || "unknown";
 
-        const hours = ((entry.duration_seconds || 0) / 3600).toFixed(2);
-
-        const totalHours = (projectTotals[project] / 3600).toFixed(2);
-
         const row = document.createElement("tr");
 
         row.innerHTML = `
@@ -105,8 +123,8 @@ function renderTable(data) {
             <td>${project}</td>
             <td>${entry.description || ""}</td>
             <td>${formatDateTime(entry.start_time) || ""}</td>
-            <td>${hours}</td>
-            <td>${totalHours}</td>
+            <td>${formatDuration(entry.duration_seconds)}</td>
+            <td>${formatDuration(projectTotals[project])}</td>
         `;
 
         tbody.appendChild(row);
