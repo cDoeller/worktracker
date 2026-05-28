@@ -22,6 +22,7 @@ function formatDuration(seconds) {
     return `${hours}.${String(minutes).padStart(2, "0")} h`;
 }
 
+
 // ----------------------------
 // DATUM FORMATIERUNG
 // ----------------------------
@@ -32,7 +33,6 @@ function formatDateTime(isoString) {
 
     const date = new Date(isoString);
 
-    // falls invalid
     if (isNaN(date.getTime())) return isoString;
 
     const day = String(date.getDate()).padStart(2, "0");
@@ -42,23 +42,25 @@ function formatDateTime(isoString) {
     return `${day}.${month}.${year}`;
 }
 
+
 // ----------------------------
 // DATEN LADEN
 // ----------------------------
+
 async function loadEntries() {
 
     const response = await fetch("/api/entries");
 
     allEntries = await response.json();
 
-    // initial render
     applyFilter();
 }
 
 
 // ----------------------------
-// FILTER FUNKTION (ZENTRAL)
+// FILTER FUNKTION
 // ----------------------------
+
 function getFilteredData() {
 
     const value = document.getElementById("search").value.toLowerCase();
@@ -67,12 +69,10 @@ function getFilteredData() {
 
     return allEntries.filter(e => {
 
-        // AUTOSAVE toggle
         if (hideAutosave && e.description === "AUTOSAVE") {
             return false;
         }
 
-        // nur Kunde + Projekt Filter
         return (
             (e.customer || "").toLowerCase().includes(value) ||
             (e.project || "").toLowerCase().includes(value)
@@ -84,6 +84,7 @@ function getFilteredData() {
 // ----------------------------
 // TABELLE RENDER
 // ----------------------------
+
 function renderTable(data) {
 
     const tbody = document.getElementById("table-body");
@@ -91,40 +92,49 @@ function renderTable(data) {
     tbody.innerHTML = "";
 
     // ----------------------------
-    // TOTALS PRO PROJEKT
+    // TOTALS: customer + project (FIX)
     // ----------------------------
-    const projectTotals = {};
+
+    const totals = {};
 
     data.forEach(entry => {
 
+        const customer = entry.customer || "unknown";
         const project = entry.project || "unknown";
+
+        // 🔥 WICHTIG: COMPOSITE KEY
+        const key = customer + "||" + project;
 
         const duration = entry.duration_seconds || 0;
 
-        if (!projectTotals[project]) {
-            projectTotals[project] = 0;
+        if (!totals[key]) {
+            totals[key] = 0;
         }
 
-        projectTotals[project] += duration;
+        totals[key] += duration;
     });
 
 
     // ----------------------------
     // ZEILEN BAUEN
     // ----------------------------
+
     data.forEach(entry => {
 
+        const customer = entry.customer || "unknown";
         const project = entry.project || "unknown";
+
+        const key = customer + "||" + project;
 
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td>${entry.customer || ""}</td>
+            <td>${customer}</td>
             <td>${project}</td>
             <td>${entry.description || ""}</td>
-            <td>${formatDateTime(entry.start_time) || ""}</td>
+            <td>${formatDateTime(entry.start_time)}</td>
             <td>${formatDuration(entry.duration_seconds)}</td>
-            <td>${formatDuration(projectTotals[project])}</td>
+            <td>${formatDuration(totals[key])}</td>
         `;
 
         tbody.appendChild(row);
@@ -133,8 +143,9 @@ function renderTable(data) {
 
 
 // ----------------------------
-// APPLY FILTER (RENDER PIPELINE)
+// APPLY FILTER
 // ----------------------------
+
 function applyFilter() {
 
     const filtered = getFilteredData();
@@ -144,14 +155,12 @@ function applyFilter() {
 
 
 // ----------------------------
-// EVENT LISTENER
+// EVENTS
 // ----------------------------
 
-// Text input
 document.getElementById("search")
     .addEventListener("input", applyFilter);
 
-// Checkbox toggle
 document.getElementById("hideAutosave")
     .addEventListener("change", applyFilter);
 
@@ -159,4 +168,5 @@ document.getElementById("hideAutosave")
 // ----------------------------
 // INIT
 // ----------------------------
+
 loadEntries();
