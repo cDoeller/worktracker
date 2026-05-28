@@ -1,16 +1,59 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+
     padding: 20px;
-    background: #f5f5f5;
-}
-
-h1 {
-    margin-bottom: 20px;
-}
-
-.entry {
     background: white;
+}
+
+.controls {
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+input {
+    padding: 8px;
+    width: auto;
+}
+
+#search {
+    width: 300px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+td {
     padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 6px;
+    border-bottom: 1px solid black;
+    text-align: left;
+    vertical-align: top;
+}
+
+td:nth-child(3),
+th:nth-child(3) {
+    max-width: 350px;
+    width: 350px;
+
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+th {
+    background: black;
+    color: white;
+    padding: 10px;
+    text-align: left;
+    font-weight: 300;
+}
+
+#summary {
+    margin: 10px 0;
 }

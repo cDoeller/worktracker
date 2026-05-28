@@ -1,21 +1,58 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <title>WorkTracker</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+
     <link rel="stylesheet" href="/static/style.css">
+
 </head>
 
 <body>
 
-    <h1>WorkTracker</h1>
+    <!-- FILTER BAR -->
+    <div class="controls">
 
-    <h2>Einträge</h2>
+        <!-- Kunde / Projekt Filter -->
+        <input id="search" placeholder="Kunde oder Projekt" />
 
-    <div id="entries"></div>
+        <!-- AUTOSAVE TOGGLE -->
+        <label class="checkbox">
+            <input type="checkbox" id="hideAutosave" checked>
+            Autosave ausblenden
+        </label>
 
+    </div>
+
+    <!-- MAIN CONTENT -->
+
+    <!-- TABLE ALL DATA -->
+    <table>
+        <thead>
+            <tr>
+                <th>Kunde</th>
+                <th>Projekt</th>
+                <th>Beschreibung</th>
+                <th>Datum</th>
+                <th>Dauer</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody id="table-body"></tbody>
+    </table>
+
+
+    <!-- SCRIPTS -->
     <script src="/static/app.js"></script>
 
 </body>
+
 </html>
